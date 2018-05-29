@@ -56,13 +56,13 @@ List Of Countries GDP Per Capital
 
 [List.file](world-map-generator/List.file)
 
-Qatar	124,927
-Macau	114,430
-Luxembourg	109,192
-Singapore	90,531
-Brunei	76,743
-Ireland	72,632
-Norway	70,590
+Qatar	124,927\n
+Macau	114,430\n
+Luxembourg	109,192\n
+Singapore	90,531\n
+Brunei	76,743\n
+Ireland	72,632\n
+Norway	70,590\n
 ...
 
 ![alt text](world-map-generator/WorldMap.svg)
