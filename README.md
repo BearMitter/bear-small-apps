@@ -19,3 +19,5 @@ Ireland	72,632
 Norway	70,590
 ...
 
+![alt text](world-map-generator/WorldMap.svg)
+
