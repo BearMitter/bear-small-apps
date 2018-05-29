@@ -8,8 +8,7 @@ Example
 
 List Of Countries GDP Per Capital
 
-List.file
-[Github](world-map-generator/List.file)
+[List.file](world-map-generator/List.file)
 
 Qatar	124,927
 Macau	114,430
