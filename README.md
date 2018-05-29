@@ -3,7 +3,7 @@ Small Apps Collection
 
 Within WorldMapGenerator, add rule of generating a HashMap of <Country,Color>, then you can get a colorful world map.
 
-###Example:
+#### Example:
 
 ```java
 
