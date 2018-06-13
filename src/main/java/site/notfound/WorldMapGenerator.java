@@ -22,42 +22,29 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class WorldMapGenerator {
-	
-	public static void  addToMap() throws Exception {
+
+	public static void addToMap() throws Exception {
 
 		List<String> list = Files.readAllLines(Paths.get("world-map-generator/List.file"));
 
 		for (String s : list) {
 			String[] arr = s.split("\t");
-			int gdp = Integer.parseInt(arr[1].replaceAll(",", ""));
-			String country = arr[0].trim();
+			int amount = Integer.parseInt(arr[1].replaceAll(",", ""));
+			String country = arr[0].trim().replaceAll((char) 160 + "", "");
 
-			if (country.equals("USA") || country.contains("United States"))
-				country = "United States of America";
+			country = fixCountry(country);
 
-			else if (country.equals("UK"))
-				country = "United Kingdom";
-
-			else if (country.contains("Czech"))
-				country = "Czechia";
-
-			else if (country.contains("Congo") && !country.contains("Dem"))
-				country = "Republic of the Congo";
-
-			else if (country.contains("Congo") && country.contains("Dem"))
-				country = "Democratic Republic of the Congo";
-
-			if (gdp > 50000) {
+			if (amount > 50000) {
 				map.put(country, "#ff0000");// RED
-			} else if (gdp > 40000) {
+			} else if (amount > 40000) {
 				map.put(country, "#ff8000");// ORANGE
-			} else if (gdp > 30000) {
+			} else if (amount > 30000) {
 				map.put(country, "#ffcc00");// YELLOW
-			} else if (gdp > 20000) {
+			} else if (amount > 20000) {
 				map.put(country, "#33cc33");// GREEN
-			} else if (gdp > 10000) {
+			} else if (amount > 10000) {
 				map.put(country, "#0040ff");// BLUE
-			} else if (gdp > 5000) {
+			} else if (amount > 5000) {
 				map.put(country, "#8000ff");// PURPLE
 			} else {
 				map.put(country, "#000000");// BLACK
@@ -65,14 +52,70 @@ public class WorldMapGenerator {
 		}
 	}
 
+	public static void addToMapDensity() throws Exception {
+
+		List<String> list = Files.readAllLines(Paths.get("world-map-generator/ListOfDensity.file"));
+
+		for (String s : list) {
+			String[] arr = s.split("\t");
+			double amount = Double.parseDouble(arr[1].replaceAll(",", ""));
+			String country = arr[0].trim().replaceAll((char) 160 + "", "");
+
+			country = fixCountry(country);
+
+			if (amount > 500) {
+				map.put(country, "#660000");
+			} else if (amount > 400) {
+				map.put(country, "#cc0000");
+			} else if (amount > 300) {
+				map.put(country, "#ff4d4d");
+			} else if (amount > 200) {
+				map.put(country, "#ffb3b3");
+			} else if (amount > 100) {
+				map.put(country, "#ffe6e6");
+			} else if (amount > 50) {
+				map.put(country, "#e6f5ff");
+			} else if (amount > 30) {
+				map.put(country, "#b3e0ff");
+			} else if (amount > 10) {
+				map.put(country, "#4db8ff");
+			} else if (amount > 5) {
+				map.put(country, "#007acc");
+			} else {
+				map.put(country, "#003d66");
+			}
+		}
+	}
+
 	static HashMap<String, String> map = new HashMap<>();
 	static HashSet<String> usedSet = new HashSet<>();
-	
+
+	public static String fixCountry(String country) {
+		if (country.equalsIgnoreCase("USA") || country.contains("United States"))
+			country = "United States of America";
+
+		else if (country.equalsIgnoreCase("UK"))
+			country = "United Kingdom";
+
+		else if (country.contains("China") && !country.contains("Taiwan"))
+			country = "China";
+
+		else if (country.contains("Czech"))
+			country = "Czechia";
+
+		else if (country.contains("Congo") && !country.contains("Dem"))
+			country = "Republic of the Congo";
+
+		else if (country.contains("Congo") && country.contains("Dem"))
+			country = "Democratic Republic of the Congo";
+		return country;
+	}
+
 	public static void main(String argv[]) throws Exception {
 
 		String style = "fill:color;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.30000001";
-		
-		addToMap();
+
+		addToMapDensity();
 
 		File fXmlFile = new File("world-map-generator/BlankMap-World-Sovereign_Nations.svg");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -116,7 +159,7 @@ public class WorldMapGenerator {
 				}
 
 				NodeList gList = eElement.getElementsByTagName("g");
-				
+
 				for (int i = 0; i < gList.getLength(); i++) {
 
 					Element subElement = (Element) gList.item(i);
@@ -177,7 +220,7 @@ public class WorldMapGenerator {
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
 		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File("world-map-generator/WorldMap.svg"));
+		StreamResult result = new StreamResult(new File("world-map-generator/WorldMapDensity.svg"));
 		transformer.transform(source, result);
 
 	}
