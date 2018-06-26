@@ -52,6 +52,39 @@ public class WorldMapGenerator {
 		}
 	}
 
+	public static void addToMapEEZ() throws Exception {
+
+		List<String> list = Files.readAllLines(Paths.get("world-map-generator/ListOfEEZArea.file"));
+
+		for (String s : list) {
+			String[] arr = s.split("\t");
+			double amount = Double.parseDouble(arr[1].replaceAll(",", ""));
+			String country = arr[0].trim().replaceAll((char) 160 + "", "");
+
+			country = fixCountry(country);
+
+			if (amount > 10000000) {
+				map.put(country, "#660000");
+			} else if (amount > 5000000) {
+				map.put(country, "#cc0000");
+			} else if (amount > 1000000) {
+				map.put(country, "#ff4d4d");
+			} else if (amount > 500000) {
+				map.put(country, "#ffb3b3");
+			} else if (amount > 100000) {
+				map.put(country, "#b3e0ff");
+			} else if (amount > 50000) {
+				map.put(country, "#4db8ff");
+			} else if (amount > 10000) {
+				map.put(country, "#007acc");
+			} else if (amount > 0) {
+				map.put(country, "#003d66");
+			} else {
+				map.put(country, "#000000");
+			}
+		}
+	}
+
 	public static void addToMapDensity() throws Exception {
 
 		List<String> list = Files.readAllLines(Paths.get("world-map-generator/ListOfDensity.file"));
@@ -108,6 +141,13 @@ public class WorldMapGenerator {
 
 		else if (country.contains("Congo") && country.contains("Dem"))
 			country = "Democratic Republic of the Congo";
+
+		else if (country.contains("Micronesia"))
+			country = "Micronesia";
+
+		else if (country.contains("Timor"))
+			country = "Timor-Leste";
+
 		return country;
 	}
 
@@ -115,7 +155,8 @@ public class WorldMapGenerator {
 
 		String style = "fill:color;fill-rule:evenodd;stroke:#ffffff;stroke-width:0.30000001";
 
-		addToMapDensity();
+		// addToMapDensity();
+		addToMapEEZ();
 
 		File fXmlFile = new File("world-map-generator/BlankMap-World-Sovereign_Nations.svg");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -210,9 +251,13 @@ public class WorldMapGenerator {
 		Set<String> set = map.keySet();
 		set.removeAll(usedSet);
 
-		System.out.println("Unfound Countries:");
-		for (String s : set) {
-			System.out.println(s);
+		if (set.size() > 0) {
+			System.out.println("Unfound Countries:");
+			for (String s : set) {
+				System.out.println(s);
+			}
+		} else {
+			System.out.println("All Countries Matched");
 		}
 
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -220,7 +265,7 @@ public class WorldMapGenerator {
 		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "5");
 		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(new File("world-map-generator/WorldMapDensity.svg"));
+		StreamResult result = new StreamResult(new File("world-map-generator/WorldMapEEZ.svg"));
 		transformer.transform(source, result);
 
 	}
